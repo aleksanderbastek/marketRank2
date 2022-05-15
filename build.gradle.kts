@@ -14,6 +14,8 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("org.springframework:spring-web:5.3.20")
+    implementation("com.google.code.gson:gson:2.8.6")
 }
 
 tasks.test {
