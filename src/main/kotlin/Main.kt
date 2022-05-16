@@ -1,4 +1,11 @@
 import org.springframework.web.client.RestTemplate
+import java.io.File
+import java.util.*
+
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 fun getSpread(ticker_id: String): SpreadOfMarket {
     val orderBook = RestTemplate().getForObject("https://public.kanga.exchange/api/market/orderbook/$ticker_id", OrderBook::class.java)
@@ -8,10 +15,10 @@ fun getSpread(ticker_id: String): SpreadOfMarket {
     if (bids.isEmpty() || asks.isEmpty())
         return SpreadOfMarket(ticker_id,null)
 
-    val minBid = bids.maxOf { it }
-    val maxAsk = asks.minOf { it }
-    val substrBidAsk = maxAsk - minBid
-    val sumBidAsk = maxAsk + minBid
+    val maxBid = bids.maxOf { it }
+    val minAsk = asks.minOf { it }
+    val substrBidAsk = minAsk - maxBid
+    val sumBidAsk = minAsk + maxBid
 
     return SpreadOfMarket(ticker_id,(substrBidAsk / (0.5 * sumBidAsk))*100)
 }
@@ -35,12 +42,49 @@ fun getTickerIds(): List<String> {
         ?.map { item -> item.ticker_id }
 }
 
-fun main(args: Array<String>) {
-    println(getSpreadsOfAllMarkets().useless)
+fun writeMarketsToFile(sortedSpreadOfMarket: SortedSpreadOfMarket) {
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
+    // create File
+    val dateFormat = DateTimeFormatter.ofPattern("yyyy_MM_dd'T'HH_mm_ss'Z'")
+    val zonedDate: String = ZonedDateTime.now(ZoneId.of("UTC+0")).format(dateFormat)
+
+    val fileName: String = "report_spread_${zonedDate}.txt"
+    var fileObject = File(fileName)
+
+    val isNewFileCreated :Boolean = fileObject.createNewFile()
+    if(isNewFileCreated){
+        println("$fileName is created successfully.")
+    } else{
+        println("$fileName already exists.")
+    }
+
+    File(fileName).appendText("Spread <= 2 \n")
+    File(fileName).appendText("Nazwa rynku  Spread[%] \n")
+    sortedSpreadOfMarket.lessOrEqual2.forEach {
+        File(fileName).appendText("${it.ticker_id} ${it.spread}% \n")
+    }
+
+    File(fileName).appendText("\nSpread >= 2 \n")
+    File(fileName).appendText("Nazwa rynku  Spread[%] \n")
+    sortedSpreadOfMarket.moreThan2.forEach {
+        File(fileName).appendText("${it.ticker_id} ${it.spread}% \n")
+    }
+
+    File(fileName).appendText("\nRynki bez płynności \n")
+    File(fileName).appendText("Nazwa rynku  Spread[%] \n")
+    sortedSpreadOfMarket.useless.forEach {
+        File(fileName).appendText("${it.ticker_id} -\n")
+    }
+}
+
+fun main(args: Array<String>) {
+    val sortedSpreadOfMarket: SortedSpreadOfMarket = getSpreadsOfAllMarkets()
+    writeMarketsToFile(sortedSpreadOfMarket)
+
+    //val dateFormat = DateTimeFormatter.ofPattern("yyyy_MM_dd'T'HH:mm:ss'Z'")
+    //val zonedDate: String = ZonedDateTime.now(ZoneId.of("UTC+0")).format(dateFormat)
+
+    //println("report_$zonedDate")
 }
 
 data class Market(val ticker_id: String)
