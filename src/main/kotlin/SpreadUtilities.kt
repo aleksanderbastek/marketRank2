@@ -22,7 +22,6 @@ private fun getSpread(ticker_id: String): SpreadOfMarket {
     val minAsk = asks.minOf { it }
     val substrBidAsk = minAsk - maxBid
     val sumBidAsk = minAsk + maxBid
-
     return SpreadOfMarket(ticker_id,(substrBidAsk / (0.5 * sumBidAsk))*100)
 }
 
