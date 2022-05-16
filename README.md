@@ -9,7 +9,7 @@ InteliJ IDEA
 
 ## Setup and Sturtup Project
 To run this project you must type this command into terminal in project folder
-gradle run
+- gradle run
 
 
 ## Code editor
