@@ -6,8 +6,8 @@ Java SE Development Kit 17
 ## Setup and Sturtup Project
 To run this project you must type this command into terminal in project folder
 - .\gradle build
-- .\gradlew run \n
-If you have installed gradle
+- .\gradlew run
+If you have installed gradle  
 - gradle build
 - gradle run
 
