@@ -4,13 +4,19 @@
 Java SE Development Kit 17
 
 ## Setup and Sturtup Project
-To run this project you must type this command into terminal in project folder
+To run this project you must type these commands into terminal in project folder
 - .\gradle build
 - .\gradlew run  
 If you have installed gradle
 - gradle build
 - gradle run
 
+## Unit tests
+To run unit tests, type these commands into command line
+- .\gradle check  
+If you have installed gradle
+- gradle check
+- 
 ## Code editor
 I'm using InteliJ IDEA thus the best way to build the app is open it in InteliJ IDEA. But using this IDE to run the project is not essential you are free to use an environment that you prefer.
 
