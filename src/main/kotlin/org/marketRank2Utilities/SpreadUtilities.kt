@@ -67,7 +67,7 @@ class SpreadUtilities {
 
     // return name of file in report_spread_{dateTime}.txt format
     private fun getFileName(): String {
-        val dateFormat = DateTimeFormatter.ofPattern("yyyy_MM_dd'T'HH_mm_ss'Z'")
+        val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy_MM_dd'T'HH_mm_ss'Z'")
         val zonedDate: String = ZonedDateTime.now(ZoneId.of("UTC+0")).format(dateFormat)
 
         val fileName: String = "report_spread_${zonedDate}.txt"
@@ -80,7 +80,12 @@ class SpreadUtilities {
         val fileName: String = getFileName()
         var spreadTable = File(fileName)
 
-        spreadTable.createNewFile()
+        val createFile = spreadTable.createNewFile()
+        if (!createFile) {
+            throw Exception("Script could not create the file!")
+        } else {
+            print("The File was created successfully")
+        }
 
         spreadTable.appendText("Spread <= 2 \n")
         spreadTable.appendText("Nazwa rynku  Spread[%] \n")

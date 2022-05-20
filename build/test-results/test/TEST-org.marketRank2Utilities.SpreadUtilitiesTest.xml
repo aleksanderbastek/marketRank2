@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.marketRank2Utilities.SpreadUtilitiesTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2022-05-20T17:41:04" hostname="DESKTOP-3QHU8HT" time="3.148">
+<testsuite name="org.marketRank2Utilities.SpreadUtilitiesTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2022-05-20T18:21:17" hostname="DESKTOP-3QHU8HT" time="1.118">
   <properties/>
-  <testcase name="writeMarketsToFile()" classname="org.marketRank2Utilities.SpreadUtilitiesTest" time="0.031"/>
+  <testcase name="writeMarketsToFile()" classname="org.marketRank2Utilities.SpreadUtilitiesTest" time="0.025"/>
   <testcase name="getSpreadsOfAllMarkets()" classname="org.marketRank2Utilities.SpreadUtilitiesTest" time="0.003"/>
-  <testcase name="getOrderBook()" classname="org.marketRank2Utilities.SpreadUtilitiesTest" time="2.888"/>
-  <testcase name="countSpread()" classname="org.marketRank2Utilities.SpreadUtilitiesTest" time="0.036"/>
-  <testcase name="getPairs()" classname="org.marketRank2Utilities.SpreadUtilitiesTest" time="0.187"/>
+  <testcase name="getOrderBook()" classname="org.marketRank2Utilities.SpreadUtilitiesTest" time="0.839"/>
+  <testcase name="countSpread()" classname="org.marketRank2Utilities.SpreadUtilitiesTest" time="0.069"/>
+  <testcase name="getPairs()" classname="org.marketRank2Utilities.SpreadUtilitiesTest" time="0.176"/>
   <system-out><![CDATA[7.64
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
