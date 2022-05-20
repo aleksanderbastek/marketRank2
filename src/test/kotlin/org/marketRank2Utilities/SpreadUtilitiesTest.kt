@@ -8,15 +8,6 @@ import java.math.RoundingMode
 
 internal class SpreadUtilitiesTest {
     val spreadUtilities: SpreadUtilities = SpreadUtilities()
-
-    @Test
-    fun getSpreadsOfAllMarkets() {
-    }
-
-    @Test
-    fun writeMarketsToFile() {
-    }
-
     @Test
     fun countSpread() {
         val expected = 7.64
