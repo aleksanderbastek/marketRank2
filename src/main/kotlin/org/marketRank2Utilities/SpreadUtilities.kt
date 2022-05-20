@@ -8,30 +8,45 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 import org.marketRank2Models.*
+import org.springframework.http.ResponseEntity
 
-open class SpreadUtilities {
-    // get single spread data for a ticker_id
-    private fun getSpread(ticker_id: String): SpreadOfMarket {
-        val apiUrl: String = "https://public.kanga.exchange/api/market/orderbook/"
-        val orderBook = RestTemplate().getForObject("$apiUrl$ticker_id", OrderBook::class.java)
-        val bids: List<Double> = orderBook.bids.map {it[0]}
-        val asks: List<Double> = orderBook.asks.map {it[0]}
-
-        if (bids.isEmpty() || asks.isEmpty())
-            return SpreadOfMarket(ticker_id,null)
-
+class SpreadUtilities {
+    val apiUrl: String = "https://public.kanga.exchange/api/market"
+    fun countSpread(ticker_id: String, bids: List<Double>, asks: List<Double>): SpreadOfMarket {
         val maxBid = bids.maxOf { it }
         val minAsk = asks.minOf { it }
         val substrBidAsk = minAsk - maxBid
         val sumBidAsk = minAsk + maxBid
+
         return SpreadOfMarket(ticker_id,(substrBidAsk / (0.5 * sumBidAsk))*100)
+    }
+
+    // api calls
+    fun getOrderBook(ticker_id: String): ResponseEntity<OrderBook> {
+        val apiUrl: String = "${this.apiUrl}/orderbook/${ticker_id}"
+        return RestTemplate().getForEntity(apiUrl, OrderBook::class.java)
+    }
+
+    fun getPairs(): ResponseEntity<Array<Market>> {
+        val apiUrl: String = "${this.apiUrl}/pairs"
+        return RestTemplate().getForEntity(apiUrl, Array<Market>::class.java)
+    }
+
+    // get single spread data for a ticker_id
+    private fun getSpread(ticker_id: String): SpreadOfMarket {
+        val orderBook: OrderBook = getOrderBook(ticker_id).body
+        val bids: List<Double> = orderBook.bids.map {it[0]}
+        val asks: List<Double> = orderBook.asks.map {it[0]}
+
+        if (bids.isEmpty() || asks.isEmpty())
+            return SpreadOfMarket(ticker_id,-1.0)
+
+        return countSpread(ticker_id, bids, asks)
     }
 
     // get all ticker_ids for all markets in kanga api
     private fun getTickerIds(): List<String> {
-        val apiUrl: String = "https://public.kanga.exchange/api/market/pairs"
-        val markets = RestTemplate().getForObject(apiUrl, Array<Market>::class.java).toList()
-
+        val markets: List<Market> = getPairs().body.toList()
         return markets
             ?.map { item -> item.ticker_id }
     }
@@ -41,9 +56,9 @@ open class SpreadUtilities {
         val markets: List<String> = getTickerIds()
         val spreadsOfAllMarkets: List<SpreadOfMarket> =  markets.map { getSpread(it) }
 
-        val lessOrEqual2: List<SpreadOfMarket> = spreadsOfAllMarkets.filter { it.spread != null &&  it.spread <= 2.0}.sortedBy { it.ticker_id }
-        val moreThan2: List<SpreadOfMarket> = spreadsOfAllMarkets.filter { it.spread != null &&  it.spread > 2.0}.sortedBy { it.ticker_id }
-        val useless: List<SpreadOfMarket> = spreadsOfAllMarkets.filter { it.spread == null}.sortedBy { it.ticker_id }
+        val lessOrEqual2: List<SpreadOfMarket> = spreadsOfAllMarkets.filter { it.spread != -1.0 &&  it.spread <= 2.0}.sortedBy { it.ticker_id }
+        val moreThan2: List<SpreadOfMarket> = spreadsOfAllMarkets.filter { it.spread != -1.0 &&  it.spread > 2.0}.sortedBy { it.ticker_id }
+        val useless: List<SpreadOfMarket> = spreadsOfAllMarkets.filter { it.spread == -1.0}.sortedBy { it.ticker_id }
 
         val sortedSpreadOfMarket: SortedSpreadOfMarket = SortedSpreadOfMarket(lessOrEqual2, moreThan2, useless)
 
