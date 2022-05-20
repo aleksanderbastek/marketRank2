@@ -16,7 +16,7 @@ To run unit tests, type these commands into command line
 - .\gradle check  
 If you have installed gradle
 - gradle check
-- 
+
 ## Code editor
 I'm using InteliJ IDEA thus the best way to build the app is open it in InteliJ IDEA. But using this IDE to run the project is not essential you are free to use an environment that you prefer.
 
